@@ -1,0 +1,1861 @@
+지도생성
+지도를 생성 기능 제공 샘플코드
+"""
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link href="https://developer.geon.kr/js/odf/odf.css" rel="stylesheet">
+	<script type="text/javascript" src="https://developer.geon.kr/js/odf/odf.min.js"></script>
+</head>
+<body>
+	<div id="map" class="odf-view"></div>
+</body>
+<script>
+	/* 맵 타겟 */
+	var mapContainer = document.getElementById('map');
+
+	/* 맵 중심점 */
+	var coord = new odf.Coordinate(199312.9996,551784.6924);
+
+	/* 맵객체 옵션 (외부에서 사용할 때는 proxyURL, proxyParam 옵션이 필요합니다.) */
+	var mapOption = {
+		center : coord,
+		zoom : 11,
+		projection : 'EPSG:5186',
+		//proxyURL: 'proxyUrl.jsp',
+		//proxyParam: 'url',
+		baroEMapURL : 'https://geon-gateway.geon.kr/map/api/map/baroemap',
+		baroEMapAirURL : 'https://geon-gateway.geon.kr/map/api/map/ngisair',
+
+		basemap : {
+			baroEMap : ['eMapBasic', 'eMapAIR', 'eMapColor', 'eMapWhite'],
+		},
+	};
+	/*
+		* 배경지도 종류
+		eMapBasic - 바로e맵 일반 지도
+		eMapColor - 바로e맵 색각 지도
+		eMapLowV - 바로e맵 큰글씨 지도
+		eMapWhite - 바로e맵 백지도
+		eMapEnglish - 바로e맵 영어 지도
+		eMapChinese - 바로e맵 중어 지도
+		eMapJapanese - 바로e맵 일어 지도
+		eMapWhiteEdu - 바로e맵 교육용 백지도
+		eMapAIR - 바로e맵  항공지도
+
+		* 프록시 사용
+		proxyURL: 'proxy.jsp' 프록시 설정
+	 */
+
+	/* 맵객체 생성 (외부에서 사용할 때는 proxyURL, proxyParam 옵션이 필요합니다.) */
+	var map = new odf.Map(mapContainer, mapOption);
+
+	//최소 줌 레벨 설정
+	map.getView().setMinZoom(8);
+	//최대 줌 레벨 설정
+	map.getView().setMaxZoom(23);
+
+</script>
+</html>
+"""
+
+배경지도설정
+배경지도 설정 기능 제공 샘플코드
+"""
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link href="https://developer.geon.kr/js/odf/odf.css" rel="stylesheet">
+	<script type="text/javascript" src="https://developer.geon.kr/js/odf/odf.min.js"></script>
+</head>
+<body>
+	<div id="map" class="odf-view"></div>
+</body>
+<script>
+	/* 맵 타겟 */
+	var mapContainer = document.getElementById('map');
+
+	/* 맵 중심점 */
+	var coord = new odf.Coordinate(199312.9996,551784.6924);
+
+	/* 맵객체 옵션 (외부에서 사용할 때는 proxyURL, proxyParam 옵션이 필요합니다.) */
+	var mapOption = {
+		center : coord,
+		zoom : 11,
+		projection : 'EPSG:5186',
+		//proxyURL: 'proxyUrl.jsp',
+		//proxyParam: 'url',
+		baroEMapURL : 'https://geon-gateway.geon.kr/map/api/map/baroemap',
+		baroEMapAirURL : 'https://geon-gateway.geon.kr/map/api/map/ngisair',
+
+		basemap : {
+			baroEMap : ['eMapBasic', 'eMapAIR', 'eMapColor', 'eMapWhite'],
+		},
+	};
+	/*
+		* 배경지도 종류
+		eMapBasic - 바로e맵 일반 지도
+		eMapColor - 바로e맵 색각 지도
+		eMapLowV - 바로e맵 큰글씨 지도
+		eMapWhite - 바로e맵 백지도
+		eMapEnglish - 바로e맵 영어 지도
+		eMapChinese - 바로e맵 중어 지도
+		eMapJapanese - 바로e맵 일어 지도
+		eMapWhiteEdu - 바로e맵 교육용 백지도
+		eMapAIR - 바로e맵  항공지도
+
+		* 프록시 사용
+		proxyURL: 'proxy.jsp' 프록시 설정
+	 */
+
+	/* 맵객체 생성 (외부에서 사용할 때는 proxyURL, proxyParam 옵션이 필요합니다.) */
+	var map = new odf.Map(mapContainer, mapOption);
+
+	/* 베이스맵 컨트롤 생성 */
+	var basemapControl = new odf.BasemapControl();
+	basemapControl.setMap(map);
+
+</script>
+</html>
+"""
+
+배경지도 최적화
+배경지도 변경시 지도 좌표계 변경하여 조금 더 선명한 배경지도를 이용 샘플코드
+"""
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link href="https://developer.geon.kr/js/odf/odf.css" rel="stylesheet">
+	<script type="text/javascript" src="https://developer.geon.kr/js/odf/odf.min.js"></script>
+</head>
+<body>
+	<div id="map" class="odf-view"></div>
+	<div>현재 좌표계 : <span id="projection"></span></div>
+	<div>
+		※ 배경지도 변경시 좌표계가 변경되면서 콘솔로그에 변경된 좌표계 값이 찍힙니다.
+		※ 같은 그룹 끼리는 좌표계가 변경되지 않습니다.
+	</div>
+</body>
+<script>
+	/* 맵 타겟 */
+	var mapContainer = document.getElementById('map');
+
+	/* 맵 중심점 */
+	var coord = new odf.Coordinate(199312.9996,551784.6924);
+
+	/* 맵객체 옵션 (외부에서 사용할 때는 proxyURL, proxyParam 옵션이 필요합니다.) */
+	var mapOption = {
+		center : coord,
+		zoom : 11,
+		projection : 'EPSG:5186',
+		//proxyURL: 'proxyUrl.jsp',
+		//proxyParam: 'url',
+		baroEMapURL : 'https://geon-gateway.geon.kr/map/api/map/baroemap',
+		baroEMapAirURL : 'https://geon-gateway.geon.kr/map/api/map/ngisair',
+
+		basemap : {
+			baroEMap : ['eMapBasic', 'eMapAIR', 'eMapColor', 'eMapWhite'],
+		},
+	};
+	mapOption.basemap.OSM = true;
+	/*
+		* 배경지도 종류
+		eMapBasic - 바로e맵 일반 지도
+		eMapColor - 바로e맵 색각 지도
+		eMapLowV - 바로e맵 큰글씨 지도
+		eMapWhite - 바로e맵 백지도
+		eMapEnglish - 바로e맵 영어 지도
+		eMapChinese - 바로e맵 중어 지도
+		eMapJapanese - 바로e맵 일어 지도
+		eMapWhiteEdu - 바로e맵 교육용 백지도
+		eMapAIR - 바로e맵  항공지도
+
+		* 프록시 사용
+		proxyURL: 'proxy.jsp' 프록시 설정
+	 */
+
+	/* 맵객체 생성 (외부에서 사용할 때는 proxyURL, proxyParam 옵션이 필요합니다.) */
+	var map = new odf.Map(mapContainer, {
+		...mapOption,
+		//배경지도 최적화 on
+		optimization: true,
+	});
+
+	/* 베이스맵 컨트롤 생성 */
+	var basemapControl = new odf.BasemapControl({});
+	basemapControl.setMap(map);
+
+
+	/* wms 레이어 생성 */
+	var wmsLayer = odf.LayerFactory.produce('geoserver', {
+		method : 'get',
+		server : 'https://geoserver.geon.kr/geoserver',
+		layer : 'geonpaas:L100000254',
+		service : 'wms',
+	});
+	wmsLayer.setMap(map);
+
+	var sld = odf.StyleFactory.produceSLD({
+		rules : [ {
+			name : 'My Rule', /*룰 이름*/
+			symbolizers : [ {
+				kind : 'Fill',
+				/*채우기색
+				rgba 값 입력시 자동변환. 네번째 인수 (투명도) 존재시 fillOpacity 보다 우선 적용됨
+				 */
+				color : '#FF9966',
+				/*채우기 투명도 0~1*/
+				fillOpacity : 0.7,
+				/*윤곽선색
+					rgba 값 입력시 자동변환. 네번째 인수 (투명도) 존재시 outlineOpacity보다 우선 적용됨
+				 */
+				outlineColor : '#338866',
+				/*윤곽선 두께*/
+				outlineWidth : 2,
+			}, ],
+		}, ],
+	});
+
+	//sld 적용
+	wmsLayer.setSLD(sld);
+
+
+	// wfs 레이어 생성
+	// LayerFactory의 produce 함수는 option이 다양하니 개발자지원센터 '지도문서'를 확인하세요
+	var wfsLayer = odf.LayerFactory.produce('geoserver'/*레이어를 생성하기위 한 테이터 호출 방법*/, {
+		method : 'get',//'post'
+		server : 'https://geoserver.geon.kr/geoserver', // 레이어가 발행된 서버 주소
+		layer : 'geonpaas:L100000258', // 발행된 레이어 명칭 (ex. 저장소명:레이어명)
+		service : 'wfs', // 호출하고자 하는 레이여 형태(wms, wfs, wmts)
+	}/*레이어 생성을 위한 옵션*/);
+	wfsLayer.setMap(map);
+	// 해당 layer가 한눈에 보이는 보여주는 extent로 화면 위치 이동 및 줌 레벨 변경
+	wfsLayer.fit();
+
+
+	document.querySelector('#projection').innerText =map.getView().getProjection().getCode();
+	odf.event.addListener(map,'change:view',()=>{
+		document.querySelector('#projection').innerText =map.getView().getProjection().getCode();
+	})
+
+</script>
+</html>
+"""
+
+사용자 지정 배경지도
+사용자 정의 배경지도 그룹/레이어 관리 기능 제공 샘플코드
+"""
+<html>
+<head>
+	<meta charset="utf-8">
+	<link href="https://developer.geon.kr/js/odf/odf.css" rel="stylesheet">
+	<script type="text/javascript" src="https://developer.geon.kr/js/odf/odf.min.js"></script>
+</head>
+<body>
+	<div id="map" class="odf-view"></div>
+	<input type="button" id="setBasemapDefault" class="onoffBtn" onClick="basemapControl.switchBaseLayer('eMapBasic')" value="배경지도 원래대로 변경"/>
+	<p id="positionStr">자세한 정보는 Console창을 확인하세요</p>
+</body>
+<script>
+	/* 맵 타겟 */
+	var mapContainer = document.getElementById('map');
+
+	/* 맵 중심점 */
+	var coord = new odf.Coordinate(199312.9996,551784.6924);
+
+	/* 맵객체 옵션 (외부에서 사용할 때는 proxyURL, proxyParam 옵션이 필요합니다.) */
+	var mapOption = {
+		center : coord,
+		zoom : 11,
+		projection : 'EPSG:5186',
+		//proxyURL: 'proxyUrl.jsp',
+		//proxyParam: 'url',
+		baroEMapURL : 'https://geon-gateway.geon.kr/map/api/map/baroemap',
+		baroEMapAirURL : 'https://geon-gateway.geon.kr/map/api/map/ngisair',
+
+		basemap : {
+			baroEMap : ['eMapBasic', 'eMapAIR', 'eMapColor', 'eMapWhite'],
+		},
+	};
+	/*
+		* 배경지도 종류
+		eMapBasic - 바로e맵 일반 지도
+		eMapColor - 바로e맵 색각 지도
+		eMapLowV - 바로e맵 큰글씨 지도
+		eMapWhite - 바로e맵 백지도
+		eMapEnglish - 바로e맵 영어 지도
+		eMapChinese - 바로e맵 중어 지도
+		eMapJapanese - 바로e맵 일어 지도
+		eMapWhiteEdu - 바로e맵 교육용 백지도
+		eMapAIR - 바로e맵  항공지도
+
+		* 프록시 사용
+		proxyURL: 'proxy.jsp' 프록시 설정
+	 */
+
+	/* 맵객체 생성 (외부에서 사용할 때는 proxyURL, proxyParam 옵션이 필요합니다.) */
+	var map = new odf.Map(mapContainer, mapOption);
+
+	/* 베이스맵 컨트롤 생성 */
+	var basemapControl = new odf.BasemapControl();
+	basemapControl.setMap(map);
+
+	//베이스맵에 새로운 그룹 추가
+	basemapControl.setGrp('myGrp');
+	//베이스맵에 등록된 그룹 제거// 해당 그룹에 속한 베이스레이어가 있다면 같이 제거
+	//basemapControl.removeGrp('myGrp');
+
+	//베이스레이어로 추가할 레이어 생성 //베이스그룹이 없으면 추가하여 베이스레이어 생성
+	var _wmtsLayer = odf.LayerFactory.produce('geoserver', {
+		method : 'get',
+		service: 'wmts',
+		server: 'https://geoserver.geon.kr/geoserver',
+		layer: 'geonpaas:L100000252',
+		crtfckey : 'tmiKPqf1niMu5rq1VcG49XKIYmhwDJEh',
+	});
+	basemapControl.setBaseLayer('myGrp','customBaseLayer','사용자정의지도',_wmtsLayer);
+	map.setCenter([237805.02689211597,437223.62942290655]);
+	map.setZoom(19);
+	//사용자 정의 베이스레이어 제거 //해당 그룹에 베이스레이어가 하나뿐이면 그룹도 함께 삭제
+	//basemapControl.removeBaseLayer('temp');
+
+	//베이스맵 컨트롤 리빌드
+	basemapControl.rebuildElement();
+
+	console.log("현재배경지도레이어");
+	console.log(basemapControl.getPresentBaseLayer());
+	console.log("현재배경지도레이어키:"+basemapControl.getPresentBaseLayerKey());
+	console.log("배경지도설정가능목록");
+	console.log(basemapControl.getSetableBasemapList());
+	console.log("배경지도레이어 유무 확인:"+basemapControl.hasBaseLayer(basemapControl.getPresentBaseLayerKey()));
+	console.log("배경지도레이어그룹  유무 확인:"+basemapControl.hasGrp('myGrp'));
+
+</script>
+</html>
+"""
+
+사용자 지정 배경지도(webGl 벡터타일 레이어)
+사용자 정의 배경지도 그룹/레이어 관리 기능 제공 샘플코드
+"""
+<html>
+<head>
+	<meta charset="utf-8">
+	<link href="https://developer.geon.kr/js/odf/odf.css" rel="stylesheet">
+	<script type="text/javascript" src="https://developer.geon.kr/js/odf/odf.min.js"></script>
+</head>
+<body>
+	<div id="map" class="odf-view"></div>
+	<input type="button" id="setBasemapDefault" class="onoffBtn" onClick="basemapControl.switchBaseLayer('eMapBasic')" value="배경지도 원래대로 변경"/>
+	<p id="positionStr">자세한 정보는 Console창을 확인하세요</p>
+</body>
+<script>
+
+	/* 맵객체 생성 (외부에서 사용할 때는 proxyURL, proxyParam 옵션이 필요합니다.) */
+	var mapContainer = document.getElementById('map');
+	var coord = [922176.2193716865, 1908044.99982566];
+	var mapOption = {
+		center: coord,
+		zoom: 16,
+		projection: 'EPSG:5179',
+    baroEMapAirURL : 'https://geon-gateway.geon.kr/map/api/map/ngisair',
+		basemap: {
+      baroEMap:['eMapAIR'],
+    },
+  };
+	/* 맵객체 생성 (외부에서 사용할 때는 proxyURL, proxyParam 옵션이 필요합니다.) */
+	var map = new odf.Map(mapContainer, mapOption);
+
+	/* 베이스맵 컨트롤 생성 */
+	var basemapControl = new odf.BasemapControl();
+	basemapControl.setMap(map);
+
+	//베이스맵에 새로운 그룹 추가
+	basemapControl.setGrp('myGrp');
+	//베이스맵에 등록된 그룹 제거// 해당 그룹에 속한 베이스레이어가 있다면 같이 제거
+	//basemapControl.removeGrp('myGrp');
+
+	//webFGLVectorTile 레이어
+	var vectorTileLayer = odf.LayerFactory.produce('api', {
+		service: 'vectortile',
+		server: {
+			url: '/pbfData/{z}/{x}/{y}.pbf'
+		},
+		projection: 'EPSG:5179',
+		tileGrid: {
+			extent: [-200000.0, -28024123.62, 31824123.62, 4000000.0],
+			tileSize: 256,
+			minZoom: 13,
+			maxZoom: 15,
+		},
+		//webgGLRender 적용여부
+		webGLRender: true,
+		//webGLRender 사용시 설정
+		renderOptions: {
+			style: {
+				builder: {
+					'fill-color': ['get', 'fillColor'],
+					'stroke-color': ['get', 'strokeColor'],
+					'stroke-width': ['get', 'strokeWidth'],
+					'z-index': ['get', 'zIndex'],
+					'circle-radius': 5,
+					'circle-fill-color': ['get', 'fillColor'],
+					'circle-stroke-color': ['get', 'strokeColor'],
+					'circle-stroke-width': ['get', 'strokeWidth'],
+				},
+				//사용자 정의 속성
+				attributes: {
+					fillColor: {
+						//사용자 정의 속성 크기
+						size: 2,
+						//사용자 정의 속성 정의
+						callback: (feature) => {
+							let color = '';
+							switch (feature.get("layer")) {
+								case "vl_scco_ctprvn_virtual":
+								case "vl_scco_ctprvn_simple_virtual":
+								case "vl_scco_ctprvn_simple_10_virtual":
+								case "vl_scco_sig_virtual":
+								case "vl_scco_sig_simple_virtual":
+								case "vl_scco_sig_simple_10_virtual": color = '#FFFFFFFF'; break;
+								case "new_vl_fclty_zone_bndry_0818_virtual": color = '#b4c49b'; break;
+								case "new_vl_rodway_bndry_1518_virtual": color = '#f4f3f199'; break;
+								case "new_vl_rodway_ctln_1214_virtual": color = '#cfcabe'; break;
+								case "new_vl_arrfc_1318_virtual":
+								case "new_vl_arrfc_1518_virtual": {
+									if (["도로교", "보행교", "철도교", "도로보행교", "도로철도교", "철도보행교", "생태교"].includes(feature.get("면형교통시설종류 구분"))) {
+										color = '#eae6d0';
+									}
+									else if (["도로터널", "공용터널", "철도터널"].includes(feature.get("면형교통시설종류 구분"))) {
+										color = '#e1e1e1';
+									}
+									else if (["고가차도"].includes(feature.get("면형교통시설종류 구분"))) {
+										color = '#e2e2e2';
+									}
+									else if (["지하보도", "지하차도", "육교"].includes(feature.get("면형교통시설종류 구분"))) {
+										color = '#eaeaea';
+									}
+									else {
+										color = 'aliceblue';
+									}
+								} break;
+								case "new_vl_rlroad_ctln_rapid_1118_virtual": color = '#ff0000cc'; break;
+								case "new_vl_rlroad_ctln_rapid_1118_virtual": color = '#FFF0'; break;
+								case "new_vl_rlroad_ctln_basic_1118_virtual": color = '#2b4fffcc'; break;
+								case "new_vl_arwfc_1618_virtual": color = '#e1e1e1'; break;
+								case "new_vl_buld_1618_virtual": color = '#f3f3f3'; break;
+								case "new_vl_sprd_manage_1518_virtual": color = '#ffb80d4d'; break;
+								case "new_vl_spbd_buld_1618_virtual": color = '#00000080'; break;
+								case "kais_tl_scco_ctprvn_virtual":
+								case "kais_tl_scco_sig_virtual": color = '#FFF0'; break;
+								case "new_vl_poi_1718_virtual": color = '#00AAFF'; break;
+								default: color = '#F00'; break;
+							}
+							return odf.ColorFactory.packColor(color);
+						},
+					},
+					strokeColor: {
+						//사용자 정의 속성 크기
+						size: 2,
+						//사용자 정의 속성 정의
+						callback: (feature) => {
+							let color = '';
+							switch (feature.get("layer")) {
+								case "vl_scco_ctprvn_virtual":
+								case "vl_scco_ctprvn_simple_virtual":
+								case "vl_scco_ctprvn_simple_10_virtual": color = '#1020dd'; break;
+								case "vl_scco_sig_virtual":
+								case "vl_scco_sig_simple_virtual":
+								case "vl_scco_sig_simple_10_virtual": color = '#43dd10'; break;
+								case "new_vl_fclty_zone_bndry_0818_virtual": color = '#b4c49b'; break;
+								case "new_vl_rodway_bndry_1518_virtual": color = '#cfcabe'; break;
+								case "new_vl_rodway_ctln_1214_virtual": color = '#cfcabe'; break;
+								case "new_vl_arrfc_1318_virtual":
+								case "new_vl_arrfc_1518_virtual": {
+									if (["도로교", "보행교", "철도교", "도로보행교", "도로철도교", "철도보행교", "생태교"].includes(feature.get("면형교통시설종류 구분"))) {
+										color = '#d8d2ba';
+									}
+									else if (["도로터널", "공용터널", "철도터널"].includes(feature.get("면형교통시설종류 구분"))) {
+										color = '#e1e1e1';
+									}
+									else if (["고가차도"].includes(feature.get("면형교통시설종류 구분"))) {
+										color = '#c7c4c4';
+									}
+									else if (["지하보도", "지하차도", "육교"].includes(feature.get("면형교통시설종류 구분"))) {
+										color = '#eaeaea';
+									}
+									else {
+										color = '';
+									}
+								} break;
+								case "new_vl_rlroad_ctln_rapid_1118_virtual": color = '#ff0000cc'; break;
+								case "new_vl_rlroad_ctln_rapid_1118_virtual": color = '#2b4fffcc'; break;
+								case "new_vl_rlroad_ctln_basic_1118_virtual": color = '#b2b2b233'; break;
+								case "new_vl_arwfc_1618_virtual": color = '#b2b2b233'; break;
+								case "new_vl_buld_1618_virtual": color = '#ddd7d1'; break;
+								case "new_vl_sprd_manage_1518_virtual": color = '#ffb80d4d'; break;
+								case "new_vl_spbd_buld_1618_virtual": color = '#00000080'; break;
+								case "kais_tl_scco_ctprvn_virtual":
+								case "kais_tl_scco_sig_virtual": color = '#000'; break;
+								case "new_vl_poi_1718_virtual": color = '#00AAFF'; break;
+								default: color = '#F00'; break;
+							}
+							return odf.ColorFactory.packColor(color);
+						},
+					},
+					strokeWidth: {
+						//사용자 정의 속성 크기
+						size: 1,
+						//사용자 정의 속성 정의
+						callback: (feature) => {
+							let width = 1;
+							switch (feature.get("layer")) {
+								case "vl_scco_ctprvn_virtual":
+								case "vl_scco_ctprvn_simple_virtual":
+								case "vl_scco_ctprvn_simple_10_virtual":
+								case "vl_scco_sig_virtual":
+								case "vl_scco_sig_simple_virtual":
+								case "vl_scco_sig_simple_10_virtual": width = 2; break;
+								case "new_vl_fclty_zone_bndry_0818_virtual": width = 0.5; break;
+								case "new_vl_rodway_bndry_1518_virtual": width = 1.25; break;
+								case "new_vl_rodway_ctln_1214_virtual": width = 0.3; break;
+								default: width = 1; break;
+							}
+							return width;
+						},
+					},
+					zIndex: {
+						//사용자 정의 속성 크기
+						size: 1,
+						//사용자 정의 속성 정의
+						callback: (feature) => {
+							let zIndex = 999;
+							switch (feature.get("layer")) {
+								case "vl_scco_ctprvn_virtual":
+								case "vl_scco_ctprvn_simple_virtual":
+								case "vl_scco_ctprvn_simple_10_virtual": zIndex = 1; break;
+								case "vl_scco_sig_virtual":
+								case "vl_scco_sig_simple_virtual":
+								case "vl_scco_sig_simple_10_virtual": zIndex = 2; break;
+								case "new_vl_fclty_zone_bndry_0818_virtual": zIndex = 3; break;
+								case "new_vl_rodway_bndry_1518_virtual": zIndex = 4; break;
+								case "new_vl_rodway_ctln_1214_virtual": zIndex = 5; break;
+								case "new_vl_arrfc_1318_virtual":
+								case "new_vl_arrfc_1518_virtual": zIndex = 6; break;
+								case "new_vl_rlroad_ctln_rapid_1118_virtual": zIndex = 7; break;
+								case "new_vl_rlroad_ctln_basic_1118_virtual": zIndex = 7; break;
+								case "new_vl_arwfc_1618_virtual": zIndex = 8; break;
+								case "new_vl_buld_1618_virtual": zIndex = 11; break;
+								case "new_vl_sprd_manage_1518_virtual": zIndex = 9; break;
+								case "new_vl_spbd_buld_1618_virtual": zIndex = 10; break;
+								case "kais_tl_scco_ctprvn_virtual":
+								case "kais_tl_scco_sig_virtual":
+								case "new_vl_poi_1718_virtual": zIndex = 20; break;
+								default: zIndex = 999; break;
+							}
+							return zIndex;
+						},
+					},
+				}
+			}
+		}
+	});
+	//vectorTileLayer.setMap(map);
+	basemapControl.setBaseLayer('myGrp', 'customBaseLayer', '사용자정의벡터타일', vectorTileLayer);
+
+	//사용자 정의 베이스레이어 제거 //해당 그룹에 베이스레이어가 하나뿐이면 그룹도 함께 삭제
+	//basemapControl.removeBaseLayer('temp');
+
+	//베이스맵 컨트롤 리빌드
+	basemapControl.rebuildElement();
+
+	console.log("현재배경지도레이어");
+	console.log(basemapControl.getPresentBaseLayer());
+	console.log("현재배경지도레이어키:"+basemapControl.getPresentBaseLayerKey());
+	console.log("배경지도설정가능목록");
+	console.log(basemapControl.getSetableBasemapList());
+	console.log("배경지도레이어 유무 확인:"+basemapControl.hasBaseLayer(basemapControl.getPresentBaseLayerKey()));
+	console.log("배경지도레이어그룹  유무 확인:"+basemapControl.hasGrp('myGrp'));
+
+</script>
+</html>
+"""
+
+축척
+지도의 축척정보 조회 기능 제공 샘플코드
+"""
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link href="https://developer.geon.kr/js/odf/odf.css" rel="stylesheet">
+	<script type="text/javascript" src="https://developer.geon.kr/js/odf/odf.min.js"></script>
+</head>
+<body>
+	<div id="map" class="odf-view"></div>
+</body>
+<script>
+
+	/* 맵객체 생성 (외부에서 사용할 때는 proxyURL, proxyParam 옵션이 필요합니다.) */
+	var mapContainer = document.getElementById('map');
+	var coord = new odf.Coordinate(199312.9996,551784.6924);
+	var mapOption = {
+		center : coord,
+		zoom : 11,
+		projection : 'EPSG:5186',
+		//proxyURL: 'proxyUrl.jsp',
+		//proxyParam: 'url',
+		baroEMapURL : 'https://geon-gateway.geon.kr/map/api/map/baroemap',
+		baroEMapAirURL : 'https://geon-gateway.geon.kr/map/api/map/ngisair',
+
+		basemap : {
+			baroEMap : ['eMapBasic', 'eMapAIR', 'eMapColor', 'eMapWhite'],
+		},
+	};
+	var map = new odf.Map(mapContainer, mapOption);
+
+
+	/* 줌 컨트롤 생성 */
+	var zoomControl = new odf.ZoomControl({
+		// 줌 슬라이더 사용여부. true/false
+		// ※ 기본값 => false
+		zoomSlider : true,
+	});
+	zoomControl.setMap(map);
+
+	/* 축척 컨트롤 생성 */
+	var scaleControl = new odf.ScaleControl({
+		// 축척 컨트롤 크기 조정(pixel)
+		// ※ 기본값 => 100, 최소 10 최대 2000
+		size : 100,
+
+		// 축척 입력 창 사용여부. true/false
+		// ※ 기본값 => false
+		scaleInput  : false,
+	});
+	scaleControl.setMap(map);
+
+</script>
+</html>
+"""
+
+네비게이션
+지도의 네비게이션(이전/다음 화면) 기능 제공 샘플코드
+"""
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link href="https://developer.geon.kr/js/odf/odf.css" rel="stylesheet">
+	<script type="text/javascript" src="https://developer.geon.kr/js/odf/odf.min.js"></script>
+</head>
+<body>
+	<div id="map" class="odf-view"></div>
+	<div style="margin-top: 15px;">
+		<button class="onoffOnlyBtn toggle grp1" onclick="draggableFn(true);">drag 이동 허용</button>
+		<button class="onoffOnlyBtn toggle grp1" onclick="draggableFn(false);">drag 이동 막기</button>
+		<button class="onoffOnlyBtn toggle grp2" onclick="zoomableFn(true);">wheel 줌 허용</button>
+		<button class="onoffOnlyBtn toggle grp2" onclick="zoomableFn(false);">wheel 줌 막기</button>
+	</div>
+</body>
+<script>
+
+	/* 맵객체 생성 (외부에서 사용할 때는 proxyURL, proxyParam 옵션이 필요합니다.) */
+	var mapContainer = document.getElementById('map');
+	var coord = new odf.Coordinate(199312.9996,551784.6924);
+	var mapOption = {
+		center : coord,
+		zoom : 11,
+		projection : 'EPSG:5186',
+		//proxyURL: 'proxyUrl.jsp',
+		//proxyParam: 'url',
+		baroEMapURL : 'https://geon-gateway.geon.kr/map/api/map/baroemap',
+		baroEMapAirURL : 'https://geon-gateway.geon.kr/map/api/map/ngisair',
+
+		basemap : {
+			baroEMap : ['eMapBasic', 'eMapAIR', 'eMapColor', 'eMapWhite'],
+		},
+	};
+	var map = new odf.Map(mapContainer, mapOption);
+
+
+	/* 줌 컨트롤 생성 */
+	var zoomControl = new odf.ZoomControl({
+		zoomSlider : true,
+	});
+	zoomControl.setMap(map);
+
+	/* 이전,다음 컨트롤 생성 */
+	var moveControl = new odf.MoveControl();
+	moveControl.setMap(map);
+
+	/* 마우스 드래그 이동 제한 */
+	function draggableFn(bools) {
+		map.setDraggable(bools);
+	}
+
+	/* 마우스 휠 확대 축소 제한 */
+	function zoomableFn(bools) {
+		map.setZoomable(bools);
+	}
+</script>
+</html>
+"""
+
+인덱스맵
+지도를 한 눈에 볼 수 있는 인덱스맵 제공 샘플코드
+"""
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link href="https://developer.geon.kr/js/odf/odf.css" rel="stylesheet">
+	<script type="text/javascript" src="https://developer.geon.kr/js/odf/odf.min.js"></script>
+</head>
+<body>
+	<div id="map" class="odf-view"></div>
+</body>
+<script>
+
+	/* 맵객체 생성 (외부에서 사용할 때는 proxyURL, proxyParam 옵션이 필요합니다.) */
+	var mapContainer = document.getElementById('map');
+	var coord = new odf.Coordinate(199312.9996,551784.6924);
+	var mapOption = {
+		center : coord,
+		zoom : 11,
+		projection : 'EPSG:5186',
+		//proxyURL: 'proxyUrl.jsp',
+		//proxyParam: 'url',
+		baroEMapURL : 'https://geon-gateway.geon.kr/map/api/map/baroemap',
+		baroEMapAirURL : 'https://geon-gateway.geon.kr/map/api/map/ngisair',
+
+		basemap : {
+			baroEMap : ['eMapBasic', 'eMapAIR', 'eMapColor', 'eMapWhite'],
+		},
+	};
+	var map = new odf.Map(mapContainer, mapOption);
+
+	/* 인덱스맵 컨트롤 생성 */
+	var overviewMapControl = new odf.OverviewMapControl();
+	overviewMapControl.setMap(map);
+
+</script>
+</html>
+"""
+
+지도회전
+지도 회전 기능 제공 샘플코드
+"""
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link href="https://developer.geon.kr/js/odf/odf.css" rel="stylesheet">
+	<script type="text/javascript" src="https://developer.geon.kr/js/odf/odf.min.js"></script>
+</head>
+<body>
+	<div id="map" class="odf-view"></div>
+	<p>Alt + Shift 키를 누른채로 지도를 드래그 해주세요.</p>
+</body>
+<script>
+
+	/* 맵객체 생성 (외부에서 사용할 때는 proxyURL, proxyParam 옵션이 필요합니다.) */
+	var mapContainer = document.getElementById('map');
+	var coord = new odf.Coordinate(199312.9996,551784.6924);
+	var mapOption = {
+		center : coord,
+		zoom : 11,
+		projection : 'EPSG:5186',
+		//proxyURL: 'proxyUrl.jsp',
+		//proxyParam: 'url',
+		baroEMapURL : 'https://geon-gateway.geon.kr/map/api/map/baroemap',
+		baroEMapAirURL : 'https://geon-gateway.geon.kr/map/api/map/ngisair',
+
+		basemap : {
+			baroEMap : ['eMapBasic', 'eMapAIR', 'eMapColor', 'eMapWhite'],
+		},
+	};
+	var map = new odf.Map(mapContainer, mapOption);
+
+
+	/* 지도회전 컨트롤 생성  */
+	var rotationControl = new odf.RotationControl();
+	rotationControl.setMap(map);
+</script>
+</html>
+"""
+
+그리기 도구
+점, 선, 면, 곡선, 다각형, 사각형, 버퍼 그리기 도구 기능 제공 샘플코드
+"""
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link href="https://developer.geon.kr/js/odf/odf.css" rel="stylesheet">
+	<script type="text/javascript" src="https://developer.geon.kr/js/odf/odf.min.js"></script>
+</head>
+<body>
+	<div id="map" class="odf-view"></div>
+	<div id="evtChk"></div>
+</body>
+<script>
+
+	/* 맵객체 생성 (외부에서 사용할 때는 proxyURL, proxyParam 옵션이 필요합니다.) */
+	var mapContainer = document.getElementById('map');
+	var coord = new odf.Coordinate(199312.9996,551784.6924);
+	var mapOption = {
+		center : coord,
+		zoom : 11,
+		projection : 'EPSG:5186',
+		//proxyURL: 'proxyUrl.jsp',
+		//proxyParam: 'url',
+		baroEMapURL : 'https://geon-gateway.geon.kr/map/api/map/baroemap',
+		baroEMapAirURL : 'https://geon-gateway.geon.kr/map/api/map/ngisair',
+
+		basemap : {
+			baroEMap : ['eMapBasic', 'eMapAIR', 'eMapColor', 'eMapWhite'],
+		},
+	};
+	var map = new odf.Map(mapContainer, mapOption);
+
+
+	/* 그리기 도구 컨트롤 생성 */
+	var drawControl = new odf.DrawControl({
+		/*
+		연속 측정 여부.
+		 - true : 연속 측정 기능 활성화. ※ 측정 종료는 clean 함수를 통해서 실행
+		 - false : (기본값) 연속 측정 기능 비활성화.
+		 */
+		continuity : false,
+
+		// 측정 옵션 활성화 여부(선 그리기/원그리기 툴에서 활성화)
+		measure : false,
+
+		/**drawControl 생성 시 새 레이어 생성 여부
+		 - false : 'odf-layer-draw-unique' 라는 id로 생성. drawControl을 여러개 생성해도 레이어를 공유
+		 - true :  'odf-layer-draw-xxxx' 라는 id로 생성.
+		  */
+		createNewLayer : false,
+		// 우클릭 편집 기능(미정의시 사용 안함)
+		editFeatureMenu: ['modify', 'dragTranslate', 'delete', 'setText'],
+		// 생성할 툴 배열
+		// 설정하지 않으면 모든 툴 생성
+		tools : [
+			'text',//텍스트 그리기 툴
+			'polygon',//다각형 그리기 툴
+			'lineString',//선 그리기 툴
+			'box',//사각형 그리기 툴
+			'point',//점 그리기 툴
+			'circle',//원 그리기 툴
+			'curve',//곡선 그리기 툴
+			'buffer',//버퍼 그리기 툴
+		],
+
+		// 툴팁 메세지 변경
+		message : {
+			DRAWSTART_POINT : '[수정한 메세지]점을 그리기 위해 지도를 클릭해주세요',
+			DRAWSTART_LINESTRING : '[수정한 메세지]선을 그리기 위해 지도를 클릭해주세요',
+			/* DRAWSTART_POLYGON: '면을 그리기 위해 지도를 클릭해주세요',
+			DRAWSTART_CURVE: '곡선을 그리기 위해 지도를 드래그해주세요',
+			DRAWSTART_TEXT: '텍스트를 입력하기 위해 지도를 클릭해주세요.',
+			DRAWSTART_BUFFER: '버퍼를 생성하기 위해 레이어를 선택해주세요.',
+			DRAWSTART_CIRCLE: '원을 그리기 위해 지도를 클릭해주세요.',
+			DRAWSTART_BOX: '사각형을 그리기 위해 지도를 클릭해주세요.',
+			DRAWEND_DRAG: '드래그를 멈추면 그리기가 종료됩니다.',
+			DRAWEND_DBCLICK: '드래그를 멈추면 그리기가 종료됩니다.', */
+		},
+
+		// 그리기 도형 스타일
+		style : {
+			fill : {
+				color : [ 254, 243, 255, 0.6 ]
+			},
+			stroke : {
+				color : [ 103, 87, 197, 0.7 ],
+				width : 2
+			},
+			image : {
+				circle : {
+					fill : {
+						color : [ 254, 243, 255, 0.6 ]
+					},
+					stroke : {
+						color : [ 103, 87, 197, 0.7 ],
+						width : 2
+					},
+					radius : 5,
+				},
+			},
+			text : {
+				textAlign : 'left',
+				font : '30px sans-serif',
+				fill : {
+					color : [ 103, 87, 197, 1 ]
+				},
+				stroke : {
+					color : [ 255, 255, 255, 1 ]
+				},
+			},
+		},
+		bufferStyle : {
+			stroke : {
+				color : [ 255, 255, 159, 1 ],
+				width : 2
+			},
+			fill : {
+				color : [ 255, 255, 159, 0.2 ],
+			},
+		}
+	});
+	// 지도 객체와 연결 (컨트롤 ui 생성)
+	drawControl.setMap(map);
+	// 지도 객체와 연결 (컨트롤 ui 생성 x)
+	//drawControl.setMap(map,false);
+
+	/*그리기 시작시 이벤트*/
+	odf.event.addListener(drawControl, 'drawstart', function(feature) {
+		//feature는 odf.Feature
+		console.log("drawstart");
+		document.getElementById('evtChk').innerText = "drawstart";
+	});
+
+	/*그리기 종료시 이벤트*/
+	odf.event.addListener(drawControl, 'drawend', function(feature) {
+		//feature는 odf.Feature
+		console.log("drawend");
+		document.getElementById('evtChk').innerText += " -> drawend";
+	});
+
+	//텍스트 그리기
+	//drawControl.drawText();
+	//폴리곤 그리기
+	//drawControl.drawPolygon();
+	//라인 그리기
+	//drawControl.drawLineString();
+	//점 그리기
+	//drawControl.drawPoint();
+	//곡선 그리기
+	//drawControl.drawCurve();
+	//사각형 그리기
+	//drawControl.drawBox();
+	//원 그리기
+	//drawControl.drawCircle();
+	//버퍼 그리기
+	//drawControl.buffer();
+
+
+	//그리기 레이어 조회
+	var drawLayer = drawControl.findDrawVectorLayer();
+	//그리기 인터렉션 삭제 및 그리기 오버레이 삭제, 그리던 도형 삭제
+	//drawControl.clear()
+
+
+	/*그리기 초기화 컨트롤 생성*/
+	var clearControl = new odf.ClearControl();
+	clearControl.setMap(map);
+</script>
+</html>
+"""
+
+측정 도구
+면적/거리/측정 기능 제공 샘플코드
+"""
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link href="https://developer.geon.kr/js/odf/odf.css" rel="stylesheet">
+	<script type="text/javascript" src="https://developer.geon.kr/js/odf/odf.min.js"></script>
+</head>
+<body>
+	<div id="map" class="odf-view"></div>
+	<div id="evtChk"></div>
+</body>
+<script>
+
+	/* 맵객체 생성 (외부에서 사용할 때는 proxyURL, proxyParam 옵션이 필요합니다.) */
+	var mapContainer = document.getElementById('map');
+	var coord = new odf.Coordinate(199312.9996,551784.6924);
+	var mapOption = {
+		center : coord,
+		zoom : 11,
+		projection : 'EPSG:5186',
+		//proxyURL: 'proxyUrl.jsp',
+		//proxyParam: 'url',
+		baroEMapURL : 'https://geon-gateway.geon.kr/map/api/map/baroemap',
+		baroEMapAirURL : 'https://geon-gateway.geon.kr/map/api/map/ngisair',
+
+		basemap : {
+			baroEMap : ['eMapBasic', 'eMapAIR', 'eMapColor', 'eMapWhite'],
+		},
+	};
+	var map = new odf.Map(mapContainer, mapOption);
+
+
+	/* 측정 도구 컨트롤 생성 */
+	var measureControl = new odf.MeasureControl({
+		/*
+		연속 측정 여부.
+		 - true : 연속 측정 기능 활성화. ※ 측정 종료는 clean 함수를 통해서 실행
+		 - false : (기본값) 연속 측정 기능 비활성화.
+		 */
+		continuity : false,
+
+		/*
+		거리 측정 표시 옵션
+		*/
+		displayOption : {
+			area : {//면적 측정 표시 옵션
+				//면적 측정 소수점 표기 자리수 (소수몇번째자리까지 표출) default : 2
+				decimalPoint : 2,
+				//면적 측정 단위 변경 미터기준(m -> km 단위로 변경) ex) 100 -> 100㎡ 부터 0.1 ㎢로 표출 default : 100
+				transformUnit: 100,
+			},
+			distance : {//거리 측정 표시 옵션
+				//거리 측정 소수점 표기 자리수 (소수몇번째자리까지 표출) default : 2
+				decimalPoint : 2,
+				//거리 측정 단위 변경 미터기준(m -> km 단위로 변경) ex) 100 -> 100m 부터 0.1 km로 표출 default : 100
+				transformUnit: 100,
+			},
+			round : {// 반경 측정 표시 옵션
+				//반경 측정 소수점 표기 자리수 (소수몇번째자리까지 표출) default : 2
+				decimalPoint : 2,
+				//반경 측정 단위 변경 미터기준(m -> km 단위로 변경) ex) 100 -> 100m 부터 0.1 km로 표출 default : 100
+				transformUnit: 100,
+			}
+		},
+
+		// 생성할 툴 배열
+		// 설정하지 않으면 모든 툴 생성
+		tools : [
+			'distance',// 거리 측정 툴
+			'area',// 면적측정 툴
+			'round',// 원의 면적측정 툴
+			'spot',// 좌표 측정 툴
+		],
+
+		// 좌표 측정시 사용할 좌표계 (기본값=> 지도의 좌표계)
+		// EPSG:4326 => GPS가 사용하는 좌표계
+		spotProjection:'EPSG:4326',
+
+		// 툴팁 메세지
+		message : {
+			// DRAWSTART: '클릭하여 측정을 시작하세요',
+			DRAWEND_POLYGON : '[수정한 메세지]클릭하여 폴리곤을 그리거나, 더블클릭하여 그리기를 종료하세요',
+			// DRAWEND_LINE: '클릭하여 라인을 그리거나, 더블클릭하여 그리기를 종료하세요',
+		},
+
+		// 측정 도형 스타일
+		style : {
+			fill : {
+				color : [ 254, 243, 255, 0.2 ]
+			},
+			stroke : {
+				color : [ 103, 87, 197, 0.7 ],
+				width : 2
+			},
+			image : {
+				circle : {
+					fill : {
+						color : [ 254, 243, 255, 0.2 ]
+					},
+					stroke : {
+						color : [ 103, 87, 197, 0.7 ],
+						width : 2
+					},
+					radius : 5,
+				},
+			},
+			text : {
+				textAlign : 'left',
+				font : '30px sans-serif',
+				fill : {
+					color : [ 103, 87, 197, 1 ]
+				},
+				stroke : {
+					color : [ 255, 255, 255, 1 ]
+				},
+			},
+		}
+	});
+	measureControl.setMap(map);
+	/*그리기/측정 초기화 컨트롤 생성*/
+	var clearControl = new odf.ClearControl();
+	clearControl.setMap(map);
+</script>
+</html>
+"""
+
+지도 출력/다운로드
+지도 출력 및 다운로드(PDF/이미지) 기능 제공 샘플코드
+"""
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link href="https://developer.geon.kr/js/odf/odf.css" rel="stylesheet">
+	<script type="text/javascript" src="https://developer.geon.kr/js/odf/odf.min.js"></script>
+</head>
+<body>
+	<div id="map" class="odf-view"></div>
+</body>
+<script>
+
+	/* 맵객체 생성 (외부에서 사용할 때는 proxyURL, proxyParam 옵션이 필요합니다.) */
+	var mapContainer = document.getElementById('map');
+	var coord = new odf.Coordinate(199312.9996,551784.6924);
+	var mapOption = {
+		center : coord,
+		zoom : 11,
+		projection : 'EPSG:5186',
+		//proxyURL: 'proxyUrl.jsp',
+		//proxyParam: 'url',
+		baroEMapURL : 'https://geon-gateway.geon.kr/map/api/map/baroemap',
+		baroEMapAirURL : 'https://geon-gateway.geon.kr/map/api/map/ngisair',
+
+		basemap : {
+			baroEMap : ['eMapBasic', 'eMapAIR', 'eMapColor', 'eMapWhite'],
+		},
+	};
+	var map = new odf.Map(mapContainer, mapOption);
+
+
+	/* 출력 컨트롤 생성 */
+	var printControl = new odf.PrintControl();
+	printControl.setMap(map);
+
+	/* 저장 컨트롤 생성 */
+	var downloadControl = new odf.DownloadControl();
+	downloadControl.setMap(map);
+</script>
+</html>
+"""
+
+마우스 좌표 표시/전체화면
+사용자의 마우스 좌표 표출 기능과 전체화면 기능 제공 (전체화면 기능은 직접해보기에서 실행해야 정상동작) 샘플코드
+"""
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link href="https://developer.geon.kr/js/odf/odf.css" rel="stylesheet">
+	<script type="text/javascript" src="https://developer.geon.kr/js/odf/odf.min.js"></script>
+</head>
+<body>
+	<div id="map" class="odf-view"></div>
+	<div id="coordDiv" style="height: 25px; font-size: 20px;"></div>
+</body>
+<script>
+
+	/* 맵객체 생성 (외부에서 사용할 때는 proxyURL, proxyParam 옵션이 필요합니다.) */
+	var mapContainer = document.getElementById('map');
+	var coord = new odf.Coordinate(199312.9996,551784.6924);
+	var mapOption = {
+		center : coord,
+		zoom : 11,
+		projection : 'EPSG:5186',
+		//proxyURL: 'proxyUrl.jsp',
+		//proxyParam: 'url',
+		baroEMapURL : 'https://geon-gateway.geon.kr/map/api/map/baroemap',
+		baroEMapAirURL : 'https://geon-gateway.geon.kr/map/api/map/ngisair',
+
+		basemap : {
+			baroEMap : ['eMapBasic', 'eMapAIR', 'eMapColor', 'eMapWhite'],
+		},
+	};
+	var map = new odf.Map(mapContainer, mapOption);
+
+
+	/*마우스 좌표 컨트롤 생성*/
+	var mousePositionControl = new odf.MousePositionControl({
+		//특정 element에 표시
+		element : document.querySelector('#coordDiv'),
+	//   callback: function (position) {
+	//     console.log(position);
+	//   },
+	});
+	mousePositionControl.setMap(map);
+
+	var fullScreenControl  = new odf.FullScreenControl();
+	fullScreenControl.setMap(map);
+</script>
+</html>
+"""
+
+스와이퍼
+지도스와이퍼 기능 제공 샘플코드
+"""
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link href="https://developer.geon.kr/js/odf/odf.css" rel="stylesheet">
+	<script type="text/javascript" src="https://developer.geon.kr/js/odf/odf.min.js"></script>
+</head>
+<body>
+	<div id="map"></div>
+	<div style="margin-top: 15px">
+		<input type="button" id="changeStrictMode" class="onoffBtn toggle" onclick="changeStrictMode()" value="strict모드 변경">
+	</div>
+</body>
+<script>
+
+	/* 맵객체 생성 (외부에서 사용할 때는 proxyURL, proxyParam 옵션이 필요합니다.) */
+	var mapContainer = document.getElementById('map');
+	var coord = new odf.Coordinate(199312.9996,551784.6924);
+	var mapOption = {
+		center : coord,
+		zoom : 11,
+		projection : 'EPSG:5186',
+		//proxyURL: 'proxyUrl.jsp',
+		//proxyParam: 'url',
+		baroEMapURL : 'https://geon-gateway.geon.kr/map/api/map/baroemap',
+		baroEMapAirURL : 'https://geon-gateway.geon.kr/map/api/map/ngisair',
+
+		basemap : {
+			baroEMap : ['eMapBasic', 'eMapAIR', 'eMapColor', 'eMapWhite'],
+		},
+	};
+	var map = new odf.Map(mapContainer, mapOption);
+
+
+	var basemapControl = new odf.BasemapControl();
+	basemapControl.setMap(map);
+
+	var wfsLayer = odf.LayerFactory.produce('geoserver', {
+		method : 'get',
+		server : 'https://geoserver.geon.kr/geoserver',
+		layer : 'geonpaas:L100000254',
+		service : 'wfs',
+	});
+	wfsLayer.setMap(map);
+	map.setCenter([192396.63847319243, 534166.8213405443]);
+	map.setZoom(14);
+
+	//스와이퍼 컨트롤 추가
+	var swiperControl = new odf.SwiperControl({
+		/**기존 사용중이던 레이어를 swiper레이어로 이용
+		 - true : 현재 지도에서 사용중인 레이어를 왼쪽 영영에 표출(기본값)
+		 - false : 왼쪽/오른쪽 영역 표출 레이어 직접 지정
+		*/
+		useOriginalLayerFlag : true,//원본레이어를 왼쪽영역에 나타낼지 여부, 기본값 true
+
+		/** 엄격한 모드 사용 여부
+		   ※ useOriginalLayerFlag 값이 true 일경우에만 적용
+		 - true : 배경지도를 제외한 레이어를 왼쪽 영역에만 표출
+		 - false : 배경지도를 제외한 레이어를 모든 영역에 표출(기본값)
+		*/
+		swipeStrictFlag : false,
+
+		// 스와이퍼 컨트롤의 슬라이더 너비 (픽셀)
+		// default값 100. 최소 0, 최대 2000
+		size : 200,
+
+		/**스와이퍼로 나타낼 레이어 배열
+		 - [레이어1, 레이어2, ...] : useOriginalLayerFlag가 true일때 이와 같은 양식 적용.
+		  						 오른쪽 영역에 표출할 레이어 목록 정의
+		 - [[레이어1, 레이어2, ...],[레이어5, 레이어6, ...]] : useOriginalLayerFlag가 false일때 이와 같은 양식 적용.
+		 											  [왼쪽 영역에 표출할 레이어 배열, 오른쪽 영역에 표출할 레이어 배열]
+		*/
+		layers : [ basemapControl.getBaseLayer('eMapAIR') ],
+	});
+	swiperControl.setMap(map);
+
+	//layers 값 셋팅
+	//swiperControl.setLayers([ basemapControl.getBaseLayer('eMapColor') ]);
+
+	//SwiperControl의 슬라이더 값 셋팅
+	//swiperControl.setSliderValue(30/*셋팅할 슬라이더 값 (0~100사이의 숫자)*/);
+
+	//SwiperControl의 슬라이더 값 조회
+	//console.log(swiperControl.getSliderValue());
+
+	//SwiperControl에 엄격모드 적용
+	//swiperControl.setSwipeStrictFlag(true);
+
+	//슬라이더 적용 여부 정의
+	//swiperControl.setState(true/*슬라이더 적용 여부(true=>적용/false=>미적용)*/);
+
+	//슬라이더 적용 여부 조회
+	//console.log(swiperControl.getState());
+
+
+	var strictMode = false;
+	function changeStrictMode() {
+		//SwiperControl에 엄격모드 적용
+		swiperControl.setSwipeStrictFlag(strictMode);
+		strictMode = !strictMode;
+	}
+</script>
+</html>
+"""
+
+분할지도
+2/3/4 분할지도 기능 제공 샘플코드
+"""
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link href="https://developer.geon.kr/js/odf/odf.css" rel="stylesheet">
+	<script type="text/javascript" src="https://developer.geon.kr/js/odf/odf.min.js"></script>
+</head>
+<body>
+	<div id="map"></div>
+	<div style="margin-top: 15px">
+		<input type="button" class="onoffOnlyBtn toggle grp1" onclick="setConnect(true)" value="동기화">
+		<input type="button" class="onoffOnlyBtn toggle grp1" onclick="setConnect(false)" value="비동기화">
+		<input type="button" class="onoffOnlyBtn toggle grp2" onclick="setOn('dualMap',true)" value="2분할 열기">
+		<input type="button" class="onoffOnlyBtn toggle grp2" onclick="setOn('quadMap',true)" value="4분할 열기">
+		<input type="button" class="onoffOnlyBtn toggle grp2" onclick="setOn('dualMap',false)" value="분할 닫기">
+	</div>
+</body>
+<script>
+
+	/* 맵객체 생성 (외부에서 사용할 때는 proxyURL, proxyParam 옵션이 필요합니다.) */
+	var mapContainer = document.getElementById('map');
+	var coord = new odf.Coordinate(199312.9996,551784.6924);
+	var mapOption = {
+		center : coord,
+		zoom : 11,
+		projection : 'EPSG:5186',
+		//proxyURL: 'proxyUrl.jsp',
+		//proxyParam: 'url',
+		baroEMapURL : 'https://geon-gateway.geon.kr/map/api/map/baroemap',
+		baroEMapAirURL : 'https://geon-gateway.geon.kr/map/api/map/ngisair',
+
+		basemap : {
+			baroEMap : ['eMapBasic', 'eMapAIR', 'eMapColor', 'eMapWhite'],
+		},
+	};
+	var map = new odf.Map(mapContainer, mapOption);
+
+
+	/* 배경지도 컨트롤 생성 */
+	var basemapControl = new odf.BasemapControl();
+	basemapControl.setMap(map);
+
+	/* 줌 컨트롤 생성 */
+	var zoomControl = new odf.ZoomControl();
+	zoomControl.setMap(map);
+
+	var dmc = new odf.DivideMapControl({
+		dualMap : [
+			{
+				position : 1,
+				mapOption : {
+					// 해당 분할지도의 basemap 옵션
+					// 정의하지 않는 경우, map 객체 생성시 사용한 basemap option 사용
+					basemap : {
+						baroEMap : [ 'eMapWhite' ]
+					},
+				},
+				// 사용할 컨트롤 지정
+				// 정의하지 않는 경우, 기본 값 적용(배경지도 컨트롤만 이용)
+				controlOption : {
+		             basemap: true,// 기본값 true
+		             zoom: false,// 기본값 false
+		             clear: false,// 기본값 false
+		             download: false,// 기본값 false
+		             print: false,// 기본값 false
+		             overviewmap: false,// 기본값 false
+		             draw: false,// 기본값 false
+		             measure: false,// 기본값 false
+		             move: false,// 기본값 false
+				}
+		 	}
+		 ],
+		 threepleMap: [
+			{
+				// position: 1, //지정안하면 기본 1
+				mapOption: {
+					basemap: {
+						baroEMap :['eMapWhite']
+					},
+				},
+			},
+			{
+				// position: 2, //지정안하면 기본 3
+				mapOption: {
+					basemap:{
+						baroEMap : ['eMapColor']
+					},
+				},
+		    }
+		],
+		quadMap : [
+			{
+				// position: 1, //지정안하면 기본 1
+				mapOption : {
+					basemap : {
+						baroEMap  : [ 'eMapWhite' ]
+					},
+				},
+			},
+			{
+				//position: 2, //지정안하면 기본 3
+				mapOption : {
+					basemap : {
+						baroEMap  : [ 'eMapColor' ]
+					},
+				},
+			},
+			{
+				//position: 4,//지정안하면 기본 4
+				mapOption : {
+					basemap : {
+						baroEMap  : [ 'eMapAIR' ]
+					},
+				},
+				controlOption : {//사용할 컨트롤 지정
+					download : true,
+				},
+			}
+		],
+		// 분할지도 상세 생성 옵션
+		// 정의하지 않으면 기본 값 적용
+		config : {
+			//분할지도 내 컨트롤 ui 생성 여부, 기본값 true
+			createElementFlag : true,
+			// 2분할지도 상세 생성 옵션
+			dualMap : {
+			 /** 2분할지도 분할 유형.
+			   * - 'vertical' : 수직 분할 (기본값)
+			   * ┌─┬─┐
+			   * │1│2│
+			   * └─┴─┘
+			   * - 'horizonal' : 수평 분할
+			   * ┌───┐
+			   * │ 1 │
+			   * ├───┤
+			   * │ 2 │
+			   * └───┘
+			   */
+				divType : 'vertical'//수직 분할 (기본값)
+			},
+			//3분할지도 상세 생성 옵션
+			threepleMap : {
+			 /** 3분할지도 분할 유형
+			   * - 'vertical' : 수직 분할 (기본값)
+			   * ┌─┬─┬─┐
+			   * │1│2│3│
+			   * └─┴─┴─┘
+			   * - 'horizonal' : 수평 분할
+			   * ┌───┐
+			   * │ 1 │
+			   * ├───┤
+			   * │ 2 │
+			   * ├───┤
+			   * │ 3 │
+			   * └───┘
+			   * - 'complex-01' : 복합형 1
+			   * ┌─┬───┐
+			   * │ │ 2 │
+			   * │1├───┤
+			   * │ │ 3 │
+			   * └─┴───┘
+			   * - 'complex-02' : 복합형 2
+			   * ┌─────┐
+			   * │  1  │
+			   * ├──┬──┤
+			   * │2 │ 3│
+			   * └──┴──┘
+			   * - 'complex-03' : 복합형 3
+			   * ┌──┬─┐
+			   * │2 │ │
+			   * ├──┤1│
+			   * │3 │ │
+			   * └──┴─┘
+			   * - 'complex-04' : 복합형 4
+			   * ┌──┬──┐
+			   * │ 1│2 │
+			   * ├──┴──┤
+			   * │  3  │
+			   * └─────┘
+			   */
+				divType : 'vertical'//수직 분할 (기본값)
+			},
+			//3분할지도 상세 생성 옵션
+			quadMap : {
+			 /**
+			   * - 'complex' : 수직,수평 분할 (기본값)
+			   * ┌───┬───┐
+			   * │ 1 │ 2 │
+			   * ├───┼───┤
+			   * │ 3 │ 4 │
+			   * └───┴───┘
+			   * - 'vertical' : 수직 분할
+			   * ┌─┬─┬─┬─┐
+			   * │1│2│3│4│
+			   * └─┴─┴─┴─┘
+			   * - 'horizonal' : 수평 분할
+			   * ┌─────┐
+			   * │  1  │
+			   * ├─────┤
+			   * │  2  │
+			   * ├─────┤
+			   * │  3  │
+			   * ├─────┤
+			   * │  4  │
+			   * └─────┘
+			   */
+				divType : 'complex'//수직,수평 분할 (기본값)
+			}
+		}
+	});
+	dmc.setMap(map);
+	map.setResizable(true);
+	function setConnect(flag) {
+		dmc.setConnect(flag);
+	}
+
+	function setOn(key, flag) {
+		dmc.setOn(key, flag);
+	}
+</script>
+</html>
+"""
+
+분할지도 상세
+메인지도의 컨트롤/레이어 복사하여 분할된 지도에 적용하는 기능 제공 샘플코드
+"""
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+</head>
+<link href="https://developer.geon.kr/js/odf/odf.css" rel="stylesheet">
+<script type="text/javascript" src="https://developer.geon.kr/js/odf/odf.min.js"></script>
+<body>
+		<div id="map" ></div>
+		<div style="margin-top:15px">
+			<input type="button" class="onoffOnlyBtn toggle grp1" onclick="setConnect(true)"  value="동기화">
+			<input type="button" class="onoffOnlyBtn toggle grp1" onclick="setConnect(false)"  value="비동기화">
+		</div>
+</body>
+<script>
+
+      /* 맵객체1 생성 */
+	  var mapContainer = document.getElementById('map');
+
+	  /* 맵 중심점 */
+	  var coord = new odf.Coordinate(199312.9996,551784.6924);
+
+	  /* 맵객체 옵션 (외부에서 사용할 때는 proxyURL, proxyParam 옵션이 필요합니다.) */
+	  var mapOption = {
+		center : coord,
+		zoom : 11,
+		projection : 'EPSG:5186',
+		//proxyURL: 'proxyUrl.jsp',
+		//proxyParam: 'url',
+		baroEMapURL : 'https://geon-gateway.geon.kr/map/api/map/baroemap',
+		baroEMapAirURL : 'https://geon-gateway.geon.kr/map/api/map/ngisair',
+
+		basemap : {
+			baroEMap : ['eMapBasic', 'eMapAIR', 'eMapColor', 'eMapWhite'],
+		},
+	};
+
+	  /* 맵객체 생성 */
+	  var map = new odf.Map(mapContainer, mapOption);
+
+      var basemapControl = new odf.BasemapControl();
+      basemapControl.setMap(map);
+
+      /* 줌 컨트롤 생성 */
+  	  var zoomControl = new odf.ZoomControl();
+  	  zoomControl.setMap(map);
+
+
+      /* 이전,다음 컨트롤 생성 */
+      var moveControl = new odf.MoveControl();
+      moveControl.setMap(map);
+
+
+      /* 인덱스맵 컨트롤 생성 */
+      var overviewMapControl = new odf.OverviewMapControl();
+      overviewMapControl.setMap(map);
+
+      /* 그리기 도구 컨트롤 생성 */
+      var drawControl = new odf.DrawControl();
+      drawControl.setMap(map);
+      /* 측정도구 컨트롤 생성 */
+      var measureControl = new odf.MeasureControl( );
+        measureControl.setMap(map);
+      /* 초기화 컨트롤 생성 */
+      var clearControl = new odf.ClearControl();
+      clearControl.setMap(map);
+
+        /* 출력 컨트롤 생성 */
+      var printControl = new odf.PrintControl();
+        printControl.setMap(map);
+
+        /* 저장 컨트롤 생성 */
+      var downloadControl = new odf.DownloadControl();
+        downloadControl.setMap(map);
+
+        /* 전체화면 컨트롤 생성 */
+      var fullScreenControl = new odf.FullScreenControl();
+      fullScreenControl.setMap(map);
+
+      /* 회전 컨트롤 생성 */
+      var rotationControl = new odf.RotationControl();
+      rotationControl.setMap(map);
+
+  	var dmc = new odf.DivideMapControl({
+        dualMap: [
+          {
+            position: 1,
+            mapOption: {
+              //지정안한 map옵션은 mainmap 생성시 사용한 mapoption적용
+              basemap:{
+            	    baroEMap : [ 'eMapWhite']
+          	  } ,
+            },
+           controlOption: {//사용할 컨트롤 지정
+            basemap: false,
+            // zoom: false,
+            // clear: false,
+            // download: false,
+            // print: false,
+            // overviewmap: false,
+            // draw: false,
+            // measure: false,
+            // move: false,
+            },
+          },
+        ],
+      });
+      dmc.setMap(map);
+      map.setResizable(true);
+
+      /*폴리곤 레이어 추가*/
+      var polygon = odf.LayerFactory.produce('geoserver', {
+        // 레이어 호출 방법 (ex. geoserver, geojson)
+        method: 'get',
+        server: 'https://geoserver.geon.kr/geoserver', // 레이어가 발행된 서버 주소 | 호출 API 주소
+        layer: 'geonpaas:L100000254', // 발행된 레이어 명칭 (ex. 저장소명:레이어명)
+        service: 'wms', // 호출하고자 하는 레이여 형태(wms, wfs, wmts)
+      });
+      polygon.setMap(map);
+      polygon.fit();
+
+      var dMap = dmc.getDividMaps().dualMap.filter(function(o){return o.mainMapFlag===false});
+
+
+      //메인지도의 컨트롤 복사
+  	  var  controls = map.getODFControls();
+  		controls.forEach((control, key) => {
+  		if(key!=='dividemap'){
+  			var newControl;
+  			var constructorOption = control.getConstructorOptions();
+
+  			if(constructorOption.length==0){
+  				newControl = new control.constructor()
+  			}
+  			else if(constructorOption.length==1){
+  				newControl = new control.constructor(constructorOption[0]);
+  			}
+  			else if(constructorOption.length==2){
+  				newControl = new control.constructor(constructorOption[0],constructorOption[1]);
+  			}
+  			if(newControl){
+  				newControl.setMap(dMap[0].map);
+  			}
+  		}
+      });
+
+	  // 레이어 복사
+	  var layers = map.getODFLayers().filter(function(layer){
+		  if(layer.getODFId()==='odf-layer-draw'||layer.getODFId()==='odf-layer-measure'){
+			  return false;
+		  }
+		  return true;
+	  }).map(function(layer){
+		  var initalOption = layer.getInitialOption();
+		  return odf.LayerFactory.produce(initalOption.type,initalOption.params);
+	  })
+	  dMap[0].map.switchLayerList(layers);
+
+      function setConnect(flag){
+  		dmc.setConnect(flag);
+  	 }
+    </script>
+</html>
+"""
+
+사용자 정의 2분할 지도
+사용자 정의대로 2분할 지도를 생성하는 기능 제공 샘플코드
+"""
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link href="https://developer.geon.kr/js/odf/odf.css" rel="stylesheet">
+	<script type="text/javascript" src="https://developer.geon.kr/js/odf/odf.min.js"></script>
+</head>
+<body>
+	<div id="map">
+		<div id="map1" style="width: 49.5%; float: left; border: 1px black solid; border-collapse: collapse;"></div>
+		<div id="map2" style="width: 49.5%; float: left; border: 1px black solid; border-collapse: collapse;"></div>
+	</div>
+	<input type="button" id="chageConnectFlag" class="onoffBtn toggle" value="동기화여부 변경" style="margin-top: 15px">
+</body>
+<script>
+
+	/* 맵객체1 생성 (외부에서 사용할 때는 proxyURL, proxyParam 옵션이 필요합니다.) */
+	var mapContainer1 = document.getElementById('map1');
+	var coord = new odf.Coordinate(199312.9996,551784.6924);
+	var mapOption = {
+		center : coord,
+		zoom : 11,
+		projection : 'EPSG:5186',
+		//proxyURL: 'proxyUrl.jsp',
+		//proxyParam: 'url',
+		baroEMapURL : 'https://geon-gateway.geon.kr/map/api/map/baroemap',
+		baroEMapAirURL : 'https://geon-gateway.geon.kr/map/api/map/ngisair',
+
+		basemap : {
+			baroEMap : ['eMapBasic', 'eMapAIR', 'eMapColor', 'eMapWhite'],
+		},
+	};
+	var map1 = new odf.Map(mapContainer1, mapOption);
+
+
+	/* 배경지도 컨트롤1 생성 */
+	var basemapControl1 = new odf.BasemapControl();
+	basemapControl1.setMap(map1);
+	map1.updateSize();
+
+	/* 줌 컨트롤 생성 */
+	var zoomControl = new odf.ZoomControl();
+	zoomControl.setMap(map1);
+
+	/* 이전,다음 컨트롤 생성 */
+	var moveControl = new odf.MoveControl();
+	moveControl.setMap(map1);
+
+	/* 맵객체2 생성 */
+	var mapContainer2 = document.getElementById('map2');
+	var map2 = new odf.Map(mapContainer2, mapOption);
+
+	/* 배경지도 컨트롤2 생성 */
+	var basemapControl2 = new odf.BasemapControl();
+	basemapControl2.setMap(map2);
+
+
+	//동기화 여부 변경
+	var connectMapFlag = false;
+	document.getElementById('chageConnectFlag').addEventListener('click',
+		function(evt) {
+			if (connectMapFlag) {
+				map2.connectOtherMap(map1, false);
+			} else {
+				map2.connectOtherMap(map1);
+			}
+			connectMapFlag = !connectMapFlag;
+		}
+	);
+</script>
+</html>
+"""
+
+사용자 정의 4분할 지도
+사용자 정의대로 4분할 지도를 생성하는 기능 제공 샘플코드
+"""
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<link href="https://developer.geon.kr/js/odf/odf.css" rel="stylesheet">
+	<script type="text/javascript" src="https://developer.geon.kr/js/odf/odf.min.js"></script>
+</head>
+<body>
+	<div id="map">
+		<div id="map1" style="width: 49.5%; float: left; border: 1px black solid; border-collapse: collapse;"></div>
+		<div id="map2" style="width: 49.5%; float: left; border: 1px black solid; border-collapse: collapse;"></div>
+		<div id="map3" style="width: 49.5%; float: left; border: 1px black solid; border-collapse: collapse;"></div>
+		<div id="map4" style="width: 49.5%; float: left; border: 1px black solid; border-collapse: collapse;"></div>
+	</div>
+	<input type="button" id="chageConnectFlag" class="onoffBtn toggle" value="동기화여부 변경" style="margin-top: 15px">
+</body>
+<script>
+
+	/* 맵객체 옵션 (외부에서 사용할 때는 proxyURL, proxyParam 옵션이 필요합니다.) */
+	var coord = new odf.Coordinate(199312.9996,551784.6924);
+	var mapOption = {
+		center : coord,
+		zoom : 11,
+		projection : 'EPSG:5186',
+		//proxyURL: 'proxyUrl.jsp',
+		//proxyParam: 'url',
+		baroEMapURL : 'https://geon-gateway.geon.kr/map/api/map/baroemap',
+		baroEMapAirURL : 'https://geon-gateway.geon.kr/map/api/map/ngisair',
+
+		basemap : {
+			baroEMap : ['eMapBasic', 'eMapAIR', 'eMapColor', 'eMapWhite'],
+		},
+	};
+
+	// 맵객체1 생성
+	var mapContainer = document.getElementById('map1');
+	var map1 = new odf.Map(mapContainer, mapOption);
+
+	// 맵객체1에 컨트롤 셋팅
+	var basemapControl1 = new odf.BasemapControl();
+	basemapControl1.setMap(map1);
+	map1.updateSize();
+
+	var zoomControl = new odf.ZoomControl();
+	zoomControl.setMap(map1);
+
+	var moveControl = new odf.MoveControl();
+	moveControl.setMap(map1);
+
+	//  맵객체2 생성
+	var mapContainer2 = document.getElementById('map2');
+	var map2 = new odf.Map(mapContainer2, mapOption);
+
+	// 맵객체2에 컨트롤 셋팅
+	var basemapControl2 = new odf.BasemapControl();
+	basemapControl2.setMap(map2);
+
+	/* 맵객체3 생성 */
+	var mapContainer3 = document.getElementById('map3');
+	var map3 = new odf.Map(mapContainer3, mapOption);
+
+	// 맵객체3에 컨트롤 셋팅
+	var basemapControl3 = new odf.BasemapControl();
+	basemapControl3.setMap(map3);
+
+	/* 맵객체4 생성 */
+	var mapContainer4 = document.getElementById('map4');
+	var map4 = new odf.Map(mapContainer4, mapOption);
+
+	// 맵객체4에 컨트롤 셋팅
+	var basemapControl4 = new odf.BasemapControl();
+	basemapControl4.setMap(map4);
+
+
+	// 동기화 여부 변경
+	var connectMapFlag = false;
+	document.getElementById('chageConnectFlag').addEventListener('click',
+		function(evt) {
+			if (connectMapFlag) {
+				map2.connectOtherMap(map1, false);
+				map3.connectOtherMap(map1, false);
+				map4.connectOtherMap(map1, false);
+			} else {
+				map2.connectOtherMap(map1);
+				map3.connectOtherMap(map1);
+				map4.connectOtherMap(map1);
+			}
+			connectMapFlag = !connectMapFlag;
+		}
+	);
+</script>
+</html>
+"""
